@@ -1,21 +1,33 @@
 package spring.ecosystem.rest_api_template.enums;
 
-import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public enum Role {
-    ADMIN(Set.of(Permission.values())), // Admin tiene todos los permisos
-    MANAGER(Set.of(Permission.READ_USERS, Permission.MANAGE_ROLES, Permission.VIEW_REPORTS)),
-    USER(Set.of(Permission.READ_SERVICES, Permission.BOOK_APPOINTMENTS, Permission.CANCEL_APPOINTMENTS)),
-    GUEST(Set.of(Permission.READ_SERVICES));
+import org.springframework.security.core.GrantedAuthority;
 
-    private final Set<Permission> permissions;
+public enum Role implements GrantedAuthority {
+    SUPER_ADMIN(Set.of(PermissionGroup.USER_MANAGEMENT, PermissionGroup.SECURITY_MANAGEMENT,
+            PermissionGroup.CONTENT_MANAGEMENT, PermissionGroup.SYSTEM_ADMINISTRATION)),
+    ADMIN(Set.of(PermissionGroup.USER_MANAGEMENT, PermissionGroup.CONTENT_MANAGEMENT,
+            PermissionGroup.SYSTEM_ADMINISTRATION)),
+    MODERATOR(Set.of(PermissionGroup.CONTENT_MANAGEMENT)),
+    REGISTERED_USER(Set.of(PermissionGroup.CONTENT_MANAGEMENT)),
+    GUEST(Set.of());
 
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
+    private final Set<PermissionGroup> permissionGroups;
+
+    Role(Set<PermissionGroup> permissionGroups) {
+        this.permissionGroups = permissionGroups;
     }
 
     public Set<Permission> getPermissions() {
-        return permissions;
+        return permissionGroups.stream()
+                .flatMap(group -> group.getPermissions().stream())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getAuthority() {
+        return "ROLE_" + this.name();
     }
 }
