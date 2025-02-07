@@ -1,6 +1,8 @@
 package spring.ecosystem.rest_api_template.enums;
 
-public enum Permission {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Permission implements GrantedAuthority {
     // User Management
     USER_CREATE, USER_EDIT, USER_DELETE, USER_CHANGE_ROLE,
     USER_BLOCK, USER_UNBLOCK, USER_RESET_PASSWORD,
@@ -18,5 +20,10 @@ public enum Permission {
     SYSTEM_BACKUP_RESTORE, SYSTEM_VIEW_LOGS,
 
     // Notifications & Messaging
-    NOTIFICATION_SEND, NOTIFICATION_CONFIGURE, NOTIFICATION_VIEW_HISTORY
+    NOTIFICATION_SEND, NOTIFICATION_CONFIGURE, NOTIFICATION_VIEW_HISTORY;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }
