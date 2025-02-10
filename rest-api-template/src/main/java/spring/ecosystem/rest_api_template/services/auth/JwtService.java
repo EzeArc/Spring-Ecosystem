@@ -19,11 +19,11 @@ public class JwtService {
     @Value("${security.jwt.expiration_in_minutes}")
     private Long EXPIRATION_IN_MINUTES;
 
-    public String generateToken(UserDetails user, Map<String,Object>extraClamis) {
-        Date issuedAt=new Date(System.currentTimeMillis());
-        Date expiration=new Date((EXPIRATION_IN_MINUTES*60*1000)+issuedAt.getTime());
+    public String generateToken(UserDetails user, Map<String, Object> extraClamis) {
+        Date issuedAt = new Date(System.currentTimeMillis());
+        Date expiration = new Date((EXPIRATION_IN_MINUTES * 60 * 1000) + issuedAt.getTime());
 
-        String jwt= Jwts.builder()
+        String jwt = Jwts.builder()
                 .header()
                 .type("JWT")
                 .and()
@@ -31,25 +31,26 @@ public class JwtService {
                 .subject(user.getUsername())
                 .issuedAt(issuedAt)
                 .expiration(expiration)
-                .signWith(generateKey(),Jwts.SIG.HS256)
+                .signWith(generateKey(), Jwts.SIG.HS256)
                 .compact();
 
-        return   jwt;
+        return jwt;
     }
-    private SecretKey generateKey(){
-        byte[] passwordDecorder= Decoders.BASE64.decode(SECRETE_KEY);
+
+    private SecretKey generateKey() {
+        byte[] passwordDecorder = Decoders.BASE64.decode(SECRETE_KEY);
         System.out.println(new String(passwordDecorder));
         return Keys.hmacShaKeyFor(passwordDecorder);
 
     }
 
-    public String extracUsername(String jwt){
+    public String extractUsername(String jwt) {
 
-        return extracAllclaims(jwt).getSubject();
+        return extractAllclaims(jwt).getSubject();
 
     }
 
-    private Claims extracAllclaims(String jwt) {
+    private Claims extractAllclaims(String jwt) {
 
         return Jwts.parser().verifyWith(generateKey()).build()
                 .parseSignedClaims(jwt).getPayload();
