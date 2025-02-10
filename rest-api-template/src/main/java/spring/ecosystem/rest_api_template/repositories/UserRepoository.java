@@ -1,4 +1,5 @@
 package spring.ecosystem.rest_api_template.repositories;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -8,5 +9,5 @@ import spring.ecosystem.rest_api_template.entities.User;
 
 public interface UserRepoository extends JpaRepository<User, UUID> {
 
-    Optional<User>findByUserName(String username);
+    Optional<User> findByEmail(String email);
 }
