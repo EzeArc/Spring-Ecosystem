@@ -11,6 +11,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.services.UserService;
 import spring.ecosystem.rest_api_template.services.auth.JwtService;
 
@@ -22,41 +24,25 @@ public class JwtAutheticateFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UserService usuarioServicio;
+    private UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        /*agarro en header y busco las autorizaciones*/
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String authorizationHeaders = request.getHeader("Authorization");
+
         if (!StringUtils.hasText(authorizationHeaders) || !authorizationHeaders.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
-
         }
 
-        /* agarro el jwt */
-
         String jwt = authorizationHeaders.split(" ")[1];
-
-        /* extraer el subjet/username  usando el jwtService*/
-        String userName = jwtService.extracUsername(jwt);
-
-        /* setear objete autentificado dentro de ContextHolder*/
-        Usuario user = usuarioServicio.findOneByUsername(userName);
-        /* creo el token de authetificacion para el securyt context holder*/
-
-        UsernamePasswordAuthenticationToken autheToken = new UsernamePasswordAuthenticationToken(userName, null, user.getAuthorities());
-
-        /*agrego detalles para sumar info a la authentificaicon*/
-
-        autheToken.setDetails(new WebAuthenticationDetails(request));
-
-        /*seteo el secunrity context holder*/
-
-        SecurityContextHolder.getContext().setAuthentication(autheToken);
-
+        String userName = jwtService.extractUsername(jwt);
+        User user = userService.findOneByUsername(userName);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userName, null,
+                user.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
-
-
     }
 }
