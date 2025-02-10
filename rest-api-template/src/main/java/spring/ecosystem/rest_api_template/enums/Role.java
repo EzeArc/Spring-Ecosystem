@@ -11,7 +11,7 @@ public enum Role implements GrantedAuthority {
     ADMIN(Set.of(PermissionGroup.USER_MANAGEMENT, PermissionGroup.CONTENT_MANAGEMENT,
             PermissionGroup.SYSTEM_ADMINISTRATION)),
     MODERATOR(Set.of(PermissionGroup.CONTENT_MANAGEMENT)),
-    REGISTERED_USER(Set.of(PermissionGroup.CONTENT_MANAGEMENT)),
+    USER(Set.of(PermissionGroup.CONTENT_MANAGEMENT)),
     GUEST(Set.of());
 
     private final Set<PermissionGroup> permissionGroups;
