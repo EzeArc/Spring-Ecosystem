@@ -36,29 +36,60 @@ public class UserService implements IUserService {
     public User createUser(UserDTO newUser) {
         // validatePassword(newUser);
         User user = new User();
-        user.setUserName(newUser.getUserName());
-        user.setRole(Role.USER);
         user.setEmail(newUser.getEmail());
+        user.setUserName(newUser.getUserName());
+        user.setFirstName(newUser.getFirstName());
+        user.setLastName(newUser.getLastName());
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(user);
         return user;
     }
 
+    // Continuar dps
     @Override
-    public User updateUser(User user) {
-        return null;
+    public User updateUser(UserDTO updatedUser, UUID id) {
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    User user = new User(
+                    // updatedUser.getEmail(),
+                    // updatedUser.getUserName(),
+                    // updatedUser.getFirstName(),
+                    // updatedUser.getLastName(),
+                    // existingUser.getRole(),
+                    // updatedUser.getPassword() != null ?
+                    // passwordEncoder.encode(updatedUser.getPassword())
+                    // : existingUser.getPassword()
+                    );
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
     }
 
     @Override
     public void deactivateUser(UUID id) {
+        userRepository.findById(id)
+                .ifPresent(user -> {
+                    user.setActive(false);
+                    userRepository.save(user);
+                });
     }
 
     @Override
     public void activateUser(UUID id) {
+        userRepository.findById(id)
+                .ifPresent(user -> {
+                    user.setActive(true);
+                    userRepository.save(user);
+                });
     }
 
     @Override
     public void deleteUser(UUID id) {
+        // Aca deberia verificarse si es el usuario mismo q se elimina o si es el admin
+        // q lo elimina?
+        userRepository.findById(id)
+                .ifPresent(userRepository::delete);
     }
 
 }

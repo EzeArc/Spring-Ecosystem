@@ -15,7 +15,7 @@ public interface IUserService {
 
     User createUser(UserDTO user);
 
-    User updateUser(User user);
+    User updateUser(UserDTO user, UUID id);
 
     void deactivateUser(UUID id);
 
