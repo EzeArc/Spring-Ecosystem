@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
-import spring.ecosystem.rest_api_template.repositories.UserRepoository;
+import spring.ecosystem.rest_api_template.repositories.UserRepository;
+
 @Service
 public class UserService implements IUserService {
     @Autowired
-    private UserRepoository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 

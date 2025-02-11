@@ -28,10 +28,12 @@ public class User extends Auditable implements UserDetails {
     private UUID id;
     @Column(unique = true, nullable = false)
     private String userName;
-    @Column(nullable = false)
-    private String password;
+    private String firstName;
+    private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
+    private String password;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -39,11 +41,13 @@ public class User extends Auditable implements UserDetails {
     public User() {
     }
 
-    public User(UUID id, String userName, String password, String email, Role role) {
+    public User(UUID id, String userName, String firstName, String lastName, String email, String password, Role role) {
         this.id = id;
         this.userName = userName;
-        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 
@@ -63,8 +67,20 @@ public class User extends Auditable implements UserDetails {
         this.userName = userName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -73,6 +89,10 @@ public class User extends Auditable implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Role getRole() {
@@ -126,5 +146,4 @@ public class User extends Auditable implements UserDetails {
     public boolean hasPermission(Permission permission) {
         return role.getPermissions().contains(permission);
     }
-
 }
