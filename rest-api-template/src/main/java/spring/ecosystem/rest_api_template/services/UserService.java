@@ -2,18 +2,22 @@ package spring.ecosystem.rest_api_template.services;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
 import spring.ecosystem.rest_api_template.repositories.UserRepoository;
 
 public class UserService implements IUserService {
-
+    @Autowired
     private UserRepoository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User findOneByEmail(String email) {
@@ -27,7 +31,7 @@ public class UserService implements IUserService {
                 .map(UserDTO::new);
     }
 
-    public User createUser(User newUser) {
+    public User createUser(UserDTO newUser) {
         // validatePassword(newUser);
         User user = new User();
         user.setUserName(newUser.getUserName());
@@ -35,6 +39,7 @@ public class UserService implements IUserService {
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(user);
+        return user;
     }
 
     @Override

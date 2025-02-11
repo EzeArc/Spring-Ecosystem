@@ -10,6 +10,7 @@ import spring.ecosystem.rest_api_template.dto.AuthenticationRequestDTO;
 import spring.ecosystem.rest_api_template.dto.AuthenticationResponseDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
+import spring.ecosystem.rest_api_template.enums.Role;
 import spring.ecosystem.rest_api_template.repositories.UserRepoository;
 import spring.ecosystem.rest_api_template.services.UserService;
 
@@ -20,26 +21,21 @@ import java.util.Map;
 public class AutheticateService {
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepoository userRepoository;
 
     @Autowired
     private UserService userService;
     @Autowired
     private JwtService jwtService;
 
-    public UserDTO registerUser(UserDTO user) throws Exception {
-        User user = userService.createUser(user);
+    public User registerUser(UserDTO user) throws Exception {
+        User userRequest = userService.createUser(user);
         UserDTO userDto = new UserDTO();
         userDto.setUserName(user.getUserName());
         userDto.setEmail(user.getEmail());
-        userDto.setRole(user.getRole().name());
-
-        String jwt = jwtService.generateToken(user, generateExtraClaims(user));
+        userDto.setRole(Role.valueOf(user.getRole().name()));
+        String jwt = jwtService.generateToken(userRequest, generateExtraClaims(userRequest));
         userDto.setJwt(jwt);
-        userRepoository.save(user);
-
-        return userDto;
+        return userRequest;
     }
 
     private Map<String, Object> generateExtraClaims(User user) {

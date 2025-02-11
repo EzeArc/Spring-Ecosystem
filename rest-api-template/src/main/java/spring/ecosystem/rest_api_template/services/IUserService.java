@@ -13,7 +13,7 @@ public interface IUserService {
 
     Page<UserDTO> listAllUsers(Pageable pageable);
 
-    User createUser(User user);
+    User createUser(UserDTO user);
 
     User updateUser(User user);
 
