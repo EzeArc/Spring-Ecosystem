@@ -27,7 +27,7 @@ public class User extends Auditable implements UserDetails {
     @Column(columnDefinition = "uuid")
     private UUID id;
     @Column(unique = true, nullable = false)
-    private String username;
+    private String userName;
     @Column(nullable = false)
     private String password;
     @Column(unique = true, nullable = false)
@@ -39,15 +39,15 @@ public class User extends Auditable implements UserDetails {
     public User() {
     }
 
-    public User(UUID id, String username, String password, String email, Role role) {
+    public User(UUID id, String userName, String password, String email, Role role) {
         this.id = id;
-        this.username = username;
+        this.userName = userName;
         this.password = password;
         this.email = email;
         this.role = role;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -55,8 +55,12 @@ public class User extends Auditable implements UserDetails {
         this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setPassword(String password) {

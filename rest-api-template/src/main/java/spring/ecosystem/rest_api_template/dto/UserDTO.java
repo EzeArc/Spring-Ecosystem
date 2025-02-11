@@ -6,17 +6,22 @@ import spring.ecosystem.rest_api_template.enums.Role;
 
 @Data
 public class UserDTO {
-    private String username;
+    private String userName;
     private String email;
     private Role role;
+    private String password;
+    private String repeatePassword;
+    private String jwt;
 
     public UserDTO() {
 
     }
 
     public UserDTO(User user) {
-        this.username = user.getUsername();
+        this.userName = user.getUserName();
         this.email = user.getEmail();
         this.role = user.getRole();
+        this.password = user.getPassword();
+        this.repeatePassword = user.getPassword();
     }
 }

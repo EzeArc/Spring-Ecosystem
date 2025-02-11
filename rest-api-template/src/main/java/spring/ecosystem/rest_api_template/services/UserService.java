@@ -30,7 +30,7 @@ public class UserService implements IUserService {
     public User createUser(User newUser) {
         // validatePassword(newUser);
         User user = new User();
-        user.setUsername(newUser.getUsername());
+        user.setUserName(newUser.getUserName());
         user.setRole(Role.USER);
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
@@ -39,26 +39,19 @@ public class UserService implements IUserService {
 
     @Override
     public User updateUser(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+        return null;
     }
 
     @Override
     public void deactivateUser(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deactivateUser'");
     }
 
     @Override
     public void activateUser(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'activateUser'");
     }
 
     @Override
     public void deleteUser(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
     }
 
 }

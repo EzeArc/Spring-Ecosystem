@@ -18,7 +18,8 @@ public class SecurityBeanInjector {
     private UserRepoository userRepoository;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
 
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -41,7 +42,8 @@ public class SecurityBeanInjector {
     @Bean
     public UserDetailsService userDetailsService() {
         return (email) -> {
-            return userRepoository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("No se encunetra ese usuario por el email" + email));
+            return userRepoository.findByEmail(email).orElseThrow(
+                    () -> new UsernameNotFoundException("No se encunetra ese usuario por el email" + email));
         };
     }
 }
