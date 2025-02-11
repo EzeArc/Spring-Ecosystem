@@ -19,7 +19,7 @@ import spring.ecosystem.rest_api_template.services.auth.JwtService;
 import java.io.IOException;
 
 @Component
-public class JwtAutheticateFilter extends OncePerRequestFilter {
+public class JwtAuthenticateFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
@@ -39,7 +39,7 @@ public class JwtAutheticateFilter extends OncePerRequestFilter {
             }
 
             String jwt = authorizationHeaders.split(" ")[1];
-            String userName = jwtService.extracEmail(jwt);
+            String userName = jwtService.extractEmail(jwt);
             User user = userService.findOneByEmail(userName);
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userName, null,
                     user.getAuthorities());

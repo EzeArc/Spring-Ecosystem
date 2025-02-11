@@ -10,12 +10,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import spring.ecosystem.rest_api_template.repositories.UserRepoository;
+import spring.ecosystem.rest_api_template.repositories.UserRepository;
 
 @Configuration
 public class SecurityBeanInjector {
     @Autowired
-    private UserRepoository userRepoository;
+    private UserRepository userRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
@@ -42,7 +42,7 @@ public class SecurityBeanInjector {
     @Bean
     public UserDetailsService userDetailsService() {
         return (email) -> {
-            return userRepoository.findByEmail(email).orElseThrow(
+            return userRepository.findByEmail(email).orElseThrow(
                     () -> new UsernameNotFoundException("No se encunetra ese usuario por el email" + email));
         };
     }

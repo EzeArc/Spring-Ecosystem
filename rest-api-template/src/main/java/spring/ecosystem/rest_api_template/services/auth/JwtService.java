@@ -16,7 +16,7 @@ import java.util.Map;
 public class JwtService {
 
     @Value("${security.jwt.secret_key}")
-    private String SECRETE_KEY;
+    private String SECRET_KEY;
 
     @Value("${security.jwt.expiration_in_minutes}")
     private Long EXPIRATION_IN_MINUTES;
@@ -40,20 +40,15 @@ public class JwtService {
     }
 
     private SecretKey generateKey() {
-        byte[] passwordDecorder = Decoders.BASE64.decode(SECRETE_KEY);
-        System.out.println(new String(passwordDecorder));
+        byte[] passwordDecorder = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(passwordDecorder);
-
     }
 
-    public String extracEmail(String jwt) {
-
+    public String extractEmail(String jwt) {
         return extractAllclaims(jwt).getSubject();
-
     }
 
     private Claims extractAllclaims(String jwt) {
-
         return Jwts.parser().verifyWith(generateKey()).build()
                 .parseSignedClaims(jwt).getPayload();
     }

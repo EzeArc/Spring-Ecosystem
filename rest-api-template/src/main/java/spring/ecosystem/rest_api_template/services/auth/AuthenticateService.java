@@ -11,19 +11,19 @@ import spring.ecosystem.rest_api_template.dto.AuthenticationResponseDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
-import spring.ecosystem.rest_api_template.repositories.UserRepoository;
 import spring.ecosystem.rest_api_template.services.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class AutheticateService {
+public class AuthenticateService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private JwtService jwtService;
 
@@ -70,7 +70,7 @@ public class AutheticateService {
 
     public boolean validateToken(String jwt) {
         try {
-            jwtService.extracEmail(jwt);
+            jwtService.extractEmail(jwt);
             return true;
 
         } catch (Exception e) {
@@ -83,7 +83,6 @@ public class AutheticateService {
     }
 
     public User findLogginInUser() {
-        /* aca basicamente tengo que obtener el usuarui del securutyContextHolder */
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) SecurityContextHolder
                 .getContext().getAuthentication();
 
@@ -94,7 +93,7 @@ public class AutheticateService {
 
     public AuthenticationResponseDTO validateGetProfile(String jwt) {
         try {
-            String userName = jwtService.extracEmail(jwt);
+            String userName = jwtService.extractEmail(jwt);
             User usuario = userService.findOneByEmail(userName);
             AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
             authenticationResponseDTO.setId(usuario.getId());

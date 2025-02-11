@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import spring.ecosystem.rest_api_template.dto.AuthenticationRequestDTO;
 import spring.ecosystem.rest_api_template.dto.AuthenticationResponseDTO;
 import spring.ecosystem.rest_api_template.entities.User;
-import spring.ecosystem.rest_api_template.services.auth.AutheticateService;
+import spring.ecosystem.rest_api_template.services.auth.AuthenticateService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AutheticationController {
     @Autowired
-    private AutheticateService autheticateService;
+    private AuthenticateService autheticateService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseDTO> Authetication(@RequestBody AuthenticationRequestDTO authen) {
@@ -27,7 +27,6 @@ public class AutheticationController {
         boolean isValidate = autheticateService.validateToken(jwt);
         return isValidate;
 
-
     }
 
     @GetMapping("/validateGetProfile")
@@ -35,14 +34,12 @@ public class AutheticationController {
         AuthenticationResponseDTO isValidate = autheticateService.validateGetProfile(jwt);
         return ResponseEntity.ok(isValidate);
 
-
     }
 
     @GetMapping("profiles")
     public ResponseEntity<User> MyProfils() {
         User user = autheticateService.findLogginInUser();
         return ResponseEntity.ok(user);
-
 
     }
 }
