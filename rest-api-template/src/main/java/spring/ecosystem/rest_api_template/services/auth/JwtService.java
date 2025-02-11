@@ -44,7 +44,7 @@ public class JwtService {
 
     }
 
-    public String extractUsername(String jwt) {
+    public String extracEmail(String jwt) {
 
         return extractAllclaims(jwt).getSubject();
 

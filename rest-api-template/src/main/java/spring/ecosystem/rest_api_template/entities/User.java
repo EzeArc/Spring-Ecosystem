@@ -47,7 +47,7 @@ public class User extends Auditable implements UserDetails {
         this.role = role;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -95,7 +95,7 @@ public class User extends Auditable implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
