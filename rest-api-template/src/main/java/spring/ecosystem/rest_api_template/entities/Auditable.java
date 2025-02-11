@@ -24,17 +24,19 @@ import lombok.NoArgsConstructor;
 public abstract class Auditable {
 
     @CreatedBy
-    protected String creadoPor;
+    protected String createdBy;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    protected Date fechaHoraCreacion;
+    protected Date createdAt;
 
     @LastModifiedBy
-    protected String ultimaActualizacionPor;
+    protected String updatedBy;
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    protected Date fechaHoraUltimaActualizacion;
+    protected Date updatedAt;
+
+    protected boolean isActive;
 
 }
