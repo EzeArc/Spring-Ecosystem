@@ -8,11 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
 import spring.ecosystem.rest_api_template.repositories.UserRepoository;
-
+@Service
 public class UserService implements IUserService {
     @Autowired
     private UserRepoository userRepository;
