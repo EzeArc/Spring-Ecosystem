@@ -6,11 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import spring.ecosystem.rest_api_template.dto.AuthenticationRequestDTO;
-import spring.ecosystem.rest_api_template.dto.AuthenticationResponseDTO;
-import spring.ecosystem.rest_api_template.dto.UserDTO;
+import spring.ecosystem.rest_api_template.dto.auth.AuthenticationRequestDTO;
+import spring.ecosystem.rest_api_template.dto.auth.AuthenticationResponseDTO;
 import spring.ecosystem.rest_api_template.entities.User;
-import spring.ecosystem.rest_api_template.enums.Role;
 import spring.ecosystem.rest_api_template.services.UserService;
 
 import java.util.HashMap;
@@ -27,16 +25,16 @@ public class AuthenticateService {
     @Autowired
     private JwtService jwtService;
 
-    public User registerUser(UserDTO user) throws Exception {
-        User userRequest = userService.createUser(user);
-        UserDTO userDto = new UserDTO();
-        userDto.setUserName(user.getUserName());
-        userDto.setEmail(user.getEmail());
-        userDto.setRole(Role.valueOf(user.getRole().name()));
-        String jwt = jwtService.generateToken(userRequest, generateExtraClaims(userRequest));
-        userDto.setJwt(jwt);
-        return userRequest;
-    }
+//    public User registerUser(UserDTO user) throws Exception {
+//        User userRequest = userService.createUser(user);
+//        UserDTO userDto = new UserDTO();
+//        userDto.setUserName(user.getUserName());
+//        userDto.setEmail(user.getEmail());
+//        userDto.setRole(Role.valueOf(user.getRole().name()));
+//        String jwt = jwtService.generateToken(userRequest, generateExtraClaims(userRequest));
+//        userDto.setJwt(jwt);
+//        return userRequest;
+//    }
 
     private Map<String, Object> generateExtraClaims(User user) {
         Map<String, Object> extraClaims = new HashMap<>();

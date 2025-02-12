@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.dto;
+package spring.ecosystem.rest_api_template.dto.auth;
 
 import lombok.Data;
 

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import spring.ecosystem.rest_api_template.dto.RegisterUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
@@ -28,12 +29,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Page<UserDTO> listAllUsers(Pageable pageable) {
+    public Page<RegisterUserDTO> listAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable)
-                .map(UserDTO::new);
+                .map(RegisterUserDTO::new);
     }
 
-    public User createUser(UserDTO newUser) {
+    @Override
+    public RegisterUserDTO createUser(UserDTO newUser) {
         // validatePassword(newUser);
         User user = new User();
         user.setEmail(newUser.getEmail());
@@ -43,7 +45,13 @@ public class UserService implements IUserService {
         user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(user);
-        return user;
+        // SE QUERES DEVOLER EL REGISTRO UNA VEZ CREADA LA CUENTA, AGREGA ESTO
+        RegisterUserDTO registerUserDTO = new RegisterUserDTO();
+        registerUserDTO.setUserName(newUser.getUserName());
+        registerUserDTO.setId(user.getId());
+        registerUserDTO.setEmail(newUser.getEmail());
+        registerUserDTO.setRole(Role.USER.name());
+        return registerUserDTO;
     }
 
     // Continuar dps
@@ -52,14 +60,14 @@ public class UserService implements IUserService {
         return userRepository.findById(id)
                 .map(existingUser -> {
                     User user = new User(
-                    // updatedUser.getEmail(),
-                    // updatedUser.getUserName(),
-                    // updatedUser.getFirstName(),
-                    // updatedUser.getLastName(),
-                    // existingUser.getRole(),
-                    // updatedUser.getPassword() != null ?
-                    // passwordEncoder.encode(updatedUser.getPassword())
-                    // : existingUser.getPassword()
+                            // updatedUser.getEmail(),
+                            // updatedUser.getUserName(),
+                            // updatedUser.getFirstName(),
+                            // updatedUser.getLastName(),
+                            // existingUser.getRole(),
+                            // updatedUser.getPassword() != null ?
+                            // passwordEncoder.encode(updatedUser.getPassword())
+                            // : existingUser.getPassword()
                     );
                     return userRepository.save(user);
                 })

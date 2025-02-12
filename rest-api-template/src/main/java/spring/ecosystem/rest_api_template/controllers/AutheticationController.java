@@ -3,8 +3,8 @@ package spring.ecosystem.rest_api_template.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spring.ecosystem.rest_api_template.dto.AuthenticationRequestDTO;
-import spring.ecosystem.rest_api_template.dto.AuthenticationResponseDTO;
+import spring.ecosystem.rest_api_template.dto.auth.AuthenticationRequestDTO;
+import spring.ecosystem.rest_api_template.dto.auth.AuthenticationResponseDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.services.auth.AuthenticateService;
 
