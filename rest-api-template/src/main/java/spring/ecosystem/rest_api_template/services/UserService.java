@@ -54,21 +54,19 @@ public class UserService implements IUserService {
         return registerUserDTO;
     }
 
-    // Continuar dps
     @Override
     public User updateUser(UserDTO updatedUser, UUID id) {
         return userRepository.findById(id)
                 .map(existingUser -> {
                     User user = new User(
-                            // updatedUser.getEmail(),
-                            // updatedUser.getUserName(),
-                            // updatedUser.getFirstName(),
-                            // updatedUser.getLastName(),
-                            // existingUser.getRole(),
-                            // updatedUser.getPassword() != null ?
-                            // passwordEncoder.encode(updatedUser.getPassword())
-                            // : existingUser.getPassword()
-                    );
+                            existingUser.getId(),
+                            updatedUser.getUserName(),
+                            updatedUser.getFirstName(),
+                            updatedUser.getLastName(),
+                            updatedUser.getEmail(),
+                            updatedUser.getPassword() != null ? passwordEncoder.encode(updatedUser.getPassword())
+                                    : existingUser.getPassword(),
+                            existingUser.getRole());
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
