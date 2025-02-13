@@ -1,62 +1,85 @@
 package spring.ecosystem.rest_api_template.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import spring.ecosystem.rest_api_template.dto.RegisterUserDTO;
-import spring.ecosystem.rest_api_template.dto.UserDTO;
-import spring.ecosystem.rest_api_template.entities.User;
-import spring.ecosystem.rest_api_template.services.UserService;
-import spring.ecosystem.rest_api_template.services.auth.AuthenticateService;
-
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import spring.ecosystem.rest_api_template.dto.ChangePasswordDTO;
+import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
+import spring.ecosystem.rest_api_template.dto.UserDTO;
+import spring.ecosystem.rest_api_template.services.UserService;
+
+@RestController
+@RequestMapping("/api/users")
 public class UserController {
 
+    @Autowired
+    private UserService userService;
+    // @Autowired
+    // private AuthenticateService authenticateService;
 
-    @Autowired
-    private UserService usuarioServicio;
-    @Autowired
-    private AuthenticateService autheticateService;
-// ACA ME PARECE MUCHO DEVOLVER EL userDTO ya que estan las password etc, abria que usar RegisterUserDTO pero hay que cambia el metodo para setear,o hacer el construtuir con RegisterUserDTO::new User
-    @GetMapping("/user")
-    public ResponseEntity<Page<RegisterUserDTO>> listAllUsers(Pageable pegeable) {
-        Page<RegisterUserDTO> listaUsuarios = usuarioServicio.listAllUsers(pegeable);
-        return ResponseEntity.ok(listaUsuarios);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // Aca devolvemos todos sin paginar, podría servir para hacer un export de los
+    // datos (CSV por ej.)
+    @GetMapping("/page")
+    public ResponseEntity<Page<UserDTO>> getUsersPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.getUsersByPageSize(page, size));
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterUserDTO> register(@RequestBody UserDTO newUser) throws Exception {
-
-        RegisterUserDTO registerUser = usuarioServicio.createUser(newUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registerUser);
-        /* return ResponseEntity.ok(RegisterUser registerUser= autheticateService.regusterOneCustumer(newUser);); */
-    }
-
-
-
-    @GetMapping("/upgrateProfile")
-    public void  upgrateProfile(UserDTO userDTO, UUID id){
-      try {
-          usuarioServicio.updateUser(userDTO,id);
-      } catch (RuntimeException e) {
-          throw new RuntimeException(e);
-      }
+    public ResponseEntity<UserDTO> registerUser(@Validated @RequestBody CreateUserDTO createUserDTO) throws Exception {
+        return new ResponseEntity<>(userService.createUser(createUserDTO), HttpStatus.CREATED);
 
     }
 
-    @GetMapping("/deleteUser")
-    public void deleteProfile(UUID id){
-        try {
-            usuarioServicio.deleteUser(id);
-        }catch (Exception e){
-            new RuntimeException(e.getMessage());
-        }
+    @PutMapping("/{id}/password")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable UUID id,
+            @RequestBody @Validated ChangePasswordDTO changePasswordDTO) {
+        userService.changePassword(id, changePasswordDTO);
+        return ResponseEntity.noContent().build();
     }
+
+    // @GetMapping("/upgrateProfile")
+    // public void upgrateProfile(UserDTO userDTO, UUID id) {
+    // try {
+    // usuarioServicio.updateUser(userDTO, id);
+    // } catch (RuntimeException e) {
+    // throw new RuntimeException(e);
+    // }
+
+    // }
+
+    // @GetMapping("/deleteUser")
+    // public void deleteProfile(UUID id) {
+    // try {
+    // usuarioServicio.deleteUser(id);
+    // } catch (Exception e) {
+    // new RuntimeException(e.getMessage());
+    // }
+    // }
 }

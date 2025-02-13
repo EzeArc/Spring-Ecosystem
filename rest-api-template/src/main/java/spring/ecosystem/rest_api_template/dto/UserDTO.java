@@ -31,9 +31,6 @@ public class UserDTO {
     @NotNull(message = "El rol no puede ser nulo.")
     private Role role;
 
-    private String repeatePassword;
-    private String jwt;
-
     public UserDTO() {
 
     }
@@ -43,7 +40,6 @@ public class UserDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.password = user.getPassword();
-        this.repeatePassword = user.getPassword();
         this.role = user.getRole();
         this.userName = user.getUserName();
     }

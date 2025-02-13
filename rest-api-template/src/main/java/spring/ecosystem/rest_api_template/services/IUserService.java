@@ -1,20 +1,26 @@
 package spring.ecosystem.rest_api_template.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import spring.ecosystem.rest_api_template.dto.RegisterUserDTO;
+import spring.ecosystem.rest_api_template.dto.ChangePasswordDTO;
+import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 
 public interface IUserService {
+
+    UserDTO getUserById(UUID id);
+
+    List<UserDTO> getAllUsers();
+
     User findOneByEmail(String email);
 
-    Page<RegisterUserDTO> listAllUsers(Pageable pageable);
+    Page<UserDTO> getUsersByPageSize(int page, int size);
 
-    RegisterUserDTO createUser(UserDTO user);
+    UserDTO createUser(CreateUserDTO createUserDTO);
 
     User updateUser(UserDTO user, UUID id);
 
@@ -23,4 +29,6 @@ public interface IUserService {
     void activateUser(UUID id);
 
     void deleteUser(UUID id);
+
+    void changePassword(UUID id, ChangePasswordDTO changePasswordDTO);
 }

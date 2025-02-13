@@ -1,18 +1,24 @@
 package spring.ecosystem.rest_api_template.services;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import spring.ecosystem.rest_api_template.dto.RegisterUserDTO;
+
+import jakarta.persistence.EntityNotFoundException;
+import spring.ecosystem.rest_api_template.dto.ChangePasswordDTO;
+import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
-import spring.ecosystem.rest_api_template.enums.Role;
+import spring.ecosystem.rest_api_template.mapper.UserMapper;
 import spring.ecosystem.rest_api_template.repositories.UserRepository;
 
 @Service
@@ -21,6 +27,15 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public UserDTO getUserById(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró el usuario con ID: " + id));
+        return userMapper.toUserDTO(user);
+    }
 
     @Override
     public User findOneByEmail(String email) {
@@ -28,30 +43,31 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email: " + email));
     }
 
+    // *Pageable* (interfaz) se utiliza para especificar los parámetros de
+    // paginación en una
+    // consulta.
+    // *Page* se utiliza para encapsular los resultados de una consulta paginada y
+    // la información de paginación.
     @Override
-    public Page<RegisterUserDTO> listAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable)
-                .map(RegisterUserDTO::new);
+    public Page<UserDTO> getUsersByPageSize(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAll(pageable);
+        return userPage.map(userMapper::toUserDTO);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public RegisterUserDTO createUser(UserDTO newUser) {
-        // validatePassword(newUser);
-        User user = new User();
-        user.setEmail(newUser.getEmail());
-        user.setUserName(newUser.getUserName());
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setRole(Role.USER);
-        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userRepository.save(user);
-        // SE QUERES DEVOLER EL REGISTRO UNA VEZ CREADA LA CUENTA, AGREGA ESTO
-        RegisterUserDTO registerUserDTO = new RegisterUserDTO();
-        registerUserDTO.setUserName(newUser.getUserName());
-        registerUserDTO.setId(user.getId());
-        registerUserDTO.setEmail(newUser.getEmail());
-        registerUserDTO.setRole(Role.USER.name());
-        return registerUserDTO;
+    public UserDTO createUser(CreateUserDTO createUserDTO) {
+        User user = userMapper.toUser(createUserDTO);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user = userRepository.save(user);
+        return userMapper.toUserDTO(user);
     }
 
     @Override
@@ -92,10 +108,21 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(UUID id) {
-        // Aca deberia verificarse si es el usuario mismo q se elimina o si es el admin
-        // q lo elimina?
         userRepository.findById(id)
                 .ifPresent(userRepository::delete);
+    }
+
+    @Override
+    public void changePassword(UUID id, ChangePasswordDTO changePasswordDTO) {
+        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+            throw new IllegalArgumentException("Las contraseñas no coinciden");
+        }
+
+        userRepository.findById(id)
+                .ifPresent(user -> {
+                    user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+                    userRepository.save(user);
+                });
     }
 
 }
