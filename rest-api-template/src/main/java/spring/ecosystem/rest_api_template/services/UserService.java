@@ -18,6 +18,7 @@ import spring.ecosystem.rest_api_template.dto.ChangePasswordDTO;
 import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
+import spring.ecosystem.rest_api_template.enums.Role;
 import spring.ecosystem.rest_api_template.mapper.UserMapper;
 import spring.ecosystem.rest_api_template.repositories.UserRepository;
 
@@ -67,6 +68,11 @@ public class UserService implements IUserService {
     public UserDTO createUser(CreateUserDTO createUserDTO) {
         User user = userMapper.createUserDTOToUser(createUserDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (createUserDTO.getRole() == null) {
+            user.setRole(Role.USER);
+        } else {
+            user.setRole(createUserDTO.getRole());
+        }
         user = userRepository.save(user);
         return userMapper.userToUserDTO(user);
     }
@@ -83,7 +89,7 @@ public class UserService implements IUserService {
                             updatedUser.getEmail(),
                             updatedUser.getPassword() != null ? passwordEncoder.encode(updatedUser.getPassword())
                                     : existingUser.getPassword(),
-                            existingUser.getRole());
+                            updatedUser.getRole() != null ? updatedUser.getRole() : existingUser.getRole());
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
