@@ -15,18 +15,15 @@ public class AutheticationController {
     private AuthenticateService autheticateService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDTO> Authetication(@RequestBody AuthenticationRequestDTO authen) {
-        AuthenticationResponseDTO auth = autheticateService.login(authen);
-
+    public ResponseEntity<AuthenticationResponseDTO> authetication(@RequestBody AuthenticationRequestDTO authDTO) {
+        AuthenticationResponseDTO auth = autheticateService.login(authDTO);
         return ResponseEntity.ok(auth);
     }
 
     @GetMapping("validate")
-    public boolean validate(@RequestParam String jwt) {
-
+    public ResponseEntity<Boolean> validate(@RequestParam String jwt) {
         boolean isValidate = autheticateService.validateToken(jwt);
-        return isValidate;
-
+        return ResponseEntity.ok(isValidate);
     }
 
     @GetMapping("/validateGetProfile")

@@ -25,7 +25,7 @@ public class JwtService {
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expiration = new Date((EXPIRATION_IN_MINUTES * 60 * 1000) + issuedAt.getTime());
 
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 .header()
                 .type("JWT")
                 .and()
@@ -35,8 +35,6 @@ public class JwtService {
                 .expiration(expiration)
                 .signWith(generateKey(), Jwts.SIG.HS256)
                 .compact();
-
-        return jwt;
     }
 
     private SecretKey generateKey() {

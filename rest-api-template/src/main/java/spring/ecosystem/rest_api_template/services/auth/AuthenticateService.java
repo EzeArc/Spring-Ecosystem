@@ -41,42 +41,28 @@ public class AuthenticateService {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("email", user.getEmail());
         extraClaims.put("role", user.getRole().name());
-        extraClaims.put("authorizaties", user.getAuthorities());
+        extraClaims.put("authorities", user.getAuthorities());
         extraClaims.put("userName", user.getUserName());
         return extraClaims;
-
     }
 
-    public AuthenticationResponseDTO login(AuthenticationRequestDTO authen) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(authen.getEmail(),
-                authen.getPassword());
+    public AuthenticationResponseDTO login(AuthenticationRequestDTO authRequest) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(authRequest.getEmail(),
+                authRequest.getPassword());
 
         authenticationManager.authenticate(authentication);
-
-        User user = userService.findOneByEmail(authen.getEmail());
-
+        User user = userService.findOneByEmail(authRequest.getEmail());
         String jwt = jwtService.generateToken(user, generateExtraClaims(user));
-
-        AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
-        authenticationResponseDTO.setJwt(jwt);
-        authenticationResponseDTO.setUserName(user.getUserName());
-        authenticationResponseDTO.setRol(user.getRole().toString());
-        authenticationResponseDTO.setId(user.getId());
-
-        return authenticationResponseDTO;
-
+        return new AuthenticationResponseDTO(user.getId(), user.getUserName(), user.getEmail(),
+                user.getRole().toString(), jwt);
     }
 
     public boolean validateToken(String jwt) {
         try {
             jwtService.extractEmail(jwt);
             return true;
-
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("validateTkoken(stringjwt");
             return false;
-
         }
 
     }
@@ -93,13 +79,13 @@ public class AuthenticateService {
     public AuthenticationResponseDTO validateGetProfile(String jwt) {
         try {
             String userName = jwtService.extractEmail(jwt);
-            User usuario = userService.findOneByEmail(userName);
-            AuthenticationResponseDTO authenticationResponseDTO = new AuthenticationResponseDTO();
-            authenticationResponseDTO.setId(usuario.getId());
-            authenticationResponseDTO.setUserName(usuario.getUserName());
-            authenticationResponseDTO.setRol(String.valueOf(usuario.getRole()));
-            authenticationResponseDTO.setJwt(jwt);
-            return authenticationResponseDTO;
+            User user = userService.findOneByEmail(userName);
+            return new AuthenticationResponseDTO(
+                    user.getId(),
+                    user.getUserName(),
+                    user.getRole().toString(),
+                    jwt,
+                    user.getEmail());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
