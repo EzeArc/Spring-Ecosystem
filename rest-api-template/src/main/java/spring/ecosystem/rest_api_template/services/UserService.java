@@ -27,6 +27,7 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserMapper userMapper;
 
@@ -34,7 +35,7 @@ public class UserService implements IUserService {
     public UserDTO getUserById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró el usuario con ID: " + id));
-        return userMapper.toUserDTO(user);
+        return userMapper.userToUserDTO(user);
     }
 
     @Override
@@ -52,22 +53,22 @@ public class UserService implements IUserService {
     public Page<UserDTO> getUsersByPageSize(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.findAll(pageable);
-        return userPage.map(userMapper::toUserDTO);
+        return userPage.map(userMapper::userToUserDTO);
     }
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(userMapper::toUserDTO)
+                .map(userMapper::userToUserDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDTO createUser(CreateUserDTO createUserDTO) {
-        User user = userMapper.toUser(createUserDTO);
+        User user = userMapper.createUserDTOToUser(createUserDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
-        return userMapper.toUserDTO(user);
+        return userMapper.userToUserDTO(user);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class UserService implements IUserService {
     public void deactivateUser(UUID id) {
         userRepository.findById(id)
                 .ifPresent(user -> {
-                    user.setActive(false);
+                    user.setIsActive(false);
                     userRepository.save(user);
                 });
     }
@@ -101,7 +102,7 @@ public class UserService implements IUserService {
     public void activateUser(UUID id) {
         userRepository.findById(id)
                 .ifPresent(user -> {
-                    user.setActive(true);
+                    user.setIsActive(true);
                     userRepository.save(user);
                 });
     }

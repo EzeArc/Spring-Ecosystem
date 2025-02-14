@@ -11,5 +11,4 @@ public class CreateUserDTO {
     private String email;
     private String password;
     private Role role;
-    private String jwt;
 }
