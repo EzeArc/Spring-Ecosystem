@@ -44,12 +44,14 @@ public class SecurityConfig {
                                 .authenticationProvider(daoAuthenticationProvider)
                                 .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
                                 .authorizeHttpRequests(authRequestConfig -> {
+                                        authRequestConfig.requestMatchers(HttpMethod.POST,"/api/users/**").permitAll();
                                         authRequestConfig
                                                         .requestMatchers(HttpMethod.GET,
                                                                         "/adminController/listaServiciosAdmin")
                                                         .hasRole(Role.ADMIN.name());
                                         authRequestConfig.requestMatchers(WHITE_LIST_URL)
                                                         .permitAll().anyRequest().authenticated();
+
                                 });
                 return http.build();
         }

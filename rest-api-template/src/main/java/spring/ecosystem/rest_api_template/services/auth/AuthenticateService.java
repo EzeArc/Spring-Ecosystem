@@ -53,8 +53,8 @@ public class AuthenticateService {
         authenticationManager.authenticate(authentication);
         User user = userService.findOneByEmail(authRequest.getEmail());
         String jwt = jwtService.generateToken(user, generateExtraClaims(user));
-        return new AuthenticationResponseDTO(user.getId(), user.getUserName(), user.getEmail(),
-                user.getRole().toString(), jwt);
+        return new AuthenticationResponseDTO(user.getId(), user.getUserName(),
+                user.getRole().toString(),jwt, user.getEmail());
     }
 
     public boolean validateToken(String jwt) {
