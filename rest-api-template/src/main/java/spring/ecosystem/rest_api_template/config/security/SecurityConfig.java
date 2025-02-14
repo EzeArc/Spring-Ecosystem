@@ -29,6 +29,11 @@ public class SecurityConfig {
         @Autowired
         private JwtAuthenticateFilter jwtAuthenticateFilter;
 
+        private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
+                        "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
+                        "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
+                        "/api/test/**", "/authenticate" };
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
@@ -43,14 +48,8 @@ public class SecurityConfig {
                                                         .requestMatchers(HttpMethod.GET,
                                                                         "/adminController/listaServiciosAdmin")
                                                         .hasRole(Role.ADMIN.name());
-                                        authRequestConfig
-                                                        .requestMatchers(HttpMethod.GET,
-                                                                        "/adminController/filtrarTurnoPor")
-                                                        .permitAll();
-
-                                        authRequestConfig.requestMatchers(HttpMethod.GET, "/api/v1/auth/is-token-valid")
-                                                        .permitAll();
-                                        authRequestConfig.anyRequest().authenticated();
+                                        authRequestConfig.requestMatchers(WHITE_LIST_URL)
+                                                        .permitAll().anyRequest().authenticated();
                                 });
                 return http.build();
         }
