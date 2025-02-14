@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.services;
+package spring.ecosystem.rest_api_template.services.impl;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,8 +19,9 @@ import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
-import spring.ecosystem.rest_api_template.mapper.UserMapper;
+import spring.ecosystem.rest_api_template.mappers.UserMapper;
 import spring.ecosystem.rest_api_template.repositories.UserRepository;
+import spring.ecosystem.rest_api_template.services.interfaces.IUserService;
 
 @Service
 public class UserService implements IUserService {

@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.mapper;
+package spring.ecosystem.rest_api_template.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

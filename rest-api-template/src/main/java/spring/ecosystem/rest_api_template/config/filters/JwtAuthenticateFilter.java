@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.configSecurity.filter;
+package spring.ecosystem.rest_api_template.config.filters;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,8 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import spring.ecosystem.rest_api_template.entities.User;
-import spring.ecosystem.rest_api_template.services.UserService;
 import spring.ecosystem.rest_api_template.services.auth.JwtService;
+import spring.ecosystem.rest_api_template.services.impl.UserService;
 
 import java.io.IOException;
 

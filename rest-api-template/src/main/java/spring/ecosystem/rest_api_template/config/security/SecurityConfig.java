@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.configSecurity;
+package spring.ecosystem.rest_api_template.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +14,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import spring.ecosystem.rest_api_template.configSecurity.filter.JwtAuthenticateFilter;
+
+import spring.ecosystem.rest_api_template.config.filters.JwtAuthenticateFilter;
 import spring.ecosystem.rest_api_template.enums.Role;
 
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-public class httpSecurityConfig {
+public class SecurityConfig {
         @Autowired
         private AuthenticationProvider daoAuthenticationProvider;
 

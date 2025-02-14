@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import spring.ecosystem.rest_api_template.dto.ChangePasswordDTO;
 import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
-import spring.ecosystem.rest_api_template.services.UserService;
+import spring.ecosystem.rest_api_template.services.impl.UserService;
 
 @RestController
 @RequestMapping("/api/users")

@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.services;
+package spring.ecosystem.rest_api_template.services.interfaces;
 
 import java.util.List;
 import java.util.UUID;

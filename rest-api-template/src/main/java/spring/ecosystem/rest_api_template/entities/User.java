@@ -41,7 +41,8 @@ public class User extends Auditable implements UserDetails {
     public User() {
     }
 
-    public User(UUID id, String userName, String firstName, String lastName, String email, String password, Role role) {
+    public User(UUID id, String userName, String firstName, String lastName, String email, String password,
+            Role role) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;

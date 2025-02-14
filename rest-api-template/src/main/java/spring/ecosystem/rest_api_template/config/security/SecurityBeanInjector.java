@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.configSecurity;
+package spring.ecosystem.rest_api_template.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

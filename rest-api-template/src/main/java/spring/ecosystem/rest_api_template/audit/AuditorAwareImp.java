@@ -1,4 +1,4 @@
-package spring.ecosystem.rest_api_template.Auditor;
+package spring.ecosystem.rest_api_template.audit;
 
 import java.util.Optional;
 
