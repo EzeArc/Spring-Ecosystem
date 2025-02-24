@@ -53,29 +53,6 @@ public class SecurityConfig {
             "/api/test/**", "/authenticate"};
 
 
-    //    @Bean
-//    @Order(2)  // Un orden más bajo para la configuración de seguridad general
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .cors(Customizer.withDefaults())
-//                .csrf(csrf -> csrf.disable())
-//                .sessionManagement(sessionMagConfig -> sessionMagConfig
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(daoAuthenticationProvider)
-//                .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests(authRequestConfig -> {
-//                    authRequestConfig.requestMatchers("/oauth2/**", "/login/**").permitAll();
-//                    authRequestConfig.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll(); // Login con usuario y contraseña
-//                    authRequestConfig.requestMatchers(WHITE_LIST_URL).permitAll();
-//                    authRequestConfig.requestMatchers(HttpMethod.GET, "/adminController/listaServiciosAdmin")
-//                            .hasRole(Role.ADMIN.name());
-//                    authRequestConfig.anyRequest().authenticated();
-//                });
-//
-//        return http.build();
-//    }
-//    @Autowired
-//    private CustomOAuth2UserService oAuth2UserService;
     @Autowired
     private CustomOAuth2SuccessHandler successHandler;
 
@@ -89,12 +66,13 @@ public class SecurityConfig {
                 .authenticationProvider(daoAuthenticationProvider)
                 .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authRequestConfig -> {
-                    authRequestConfig.requestMatchers("/oauth2/**", "/login/**").permitAll();
+                    authRequestConfig.requestMatchers("/oauth2/**", "/login/**","/api/users/**").permitAll();
                     authRequestConfig.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll(); // Login con usuario y contraseña
                     authRequestConfig.requestMatchers(WHITE_LIST_URL).permitAll();
                     authRequestConfig.requestMatchers(HttpMethod.GET, "/adminController/listaServiciosAdmin")
                             .hasRole(Role.ADMIN.name());
-                    authRequestConfig.requestMatchers(HttpMethod.POST,"/api/users/register").permitAll();
+                    authRequestConfig.requestMatchers(HttpMethod.POST, "/api/users/register").permitAll();
+                    authRequestConfig.requestMatchers(HttpMethod.PUT, "/api/users/upgrateProfile").permitAll();
                     authRequestConfig.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
@@ -149,14 +127,5 @@ public class SecurityConfig {
         }
         return keyPair;
     }
-//    @Bean
-//    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-//        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-//    }
-//    @Bean
-//    public AuthorizationServerSettings authorizationServerSettings() {
-//        return AuthorizationServerSettings.builder()
-//                .issuer("http://localhost:8080")
-//                .build();
-//    }
+
 }

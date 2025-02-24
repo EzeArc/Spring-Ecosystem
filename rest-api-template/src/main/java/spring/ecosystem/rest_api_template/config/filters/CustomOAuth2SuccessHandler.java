@@ -3,24 +3,17 @@ package spring.ecosystem.rest_api_template.config.filters;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import spring.ecosystem.rest_api_template.entities.User;
 import spring.ecosystem.rest_api_template.enums.Role;
 import spring.ecosystem.rest_api_template.repositories.UserRepository;
 import spring.ecosystem.rest_api_template.services.auth.JwtService;
-import spring.ecosystem.rest_api_template.services.impl.UserService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,12 +21,13 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-@RequiredArgsConstructor
 public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
-    private final UserRepository usuarioRepository;
-    private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private  UserRepository usuarioRepository;
+    @Autowired
+    private  JwtService jwtService;
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

@@ -21,7 +21,7 @@ public class JwtService {
     @Value("${security.jwt.expiration_in_minutes}")
     private Long EXPIRATION_IN_MINUTES;
 
-    public String generateToken(UserDetails user, Map<String, Object> extraClamis) {
+    public String generateToken(UserDetails user, Map<String, Object> extraClaims) {
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expiration = new Date((EXPIRATION_IN_MINUTES * 60 * 1000) + issuedAt.getTime());
 
@@ -29,7 +29,7 @@ public class JwtService {
                 .header()
                 .type("JWT")
                 .and()
-                .claims(extraClamis)
+                .claims(extraClaims)
                 .subject(user.getUsername())
                 .issuedAt(issuedAt)
                 .expiration(expiration)

@@ -64,15 +64,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // @GetMapping("/upgrateProfile")
-    // public void upgrateProfile(UserDTO userDTO, UUID id) {
-    // try {
-    // usuarioServicio.updateUser(userDTO, id);
-    // } catch (RuntimeException e) {
-    // throw new RuntimeException(e);
-    // }
+     @PutMapping("/upgrateProfile")
+     public void upgrateProfile( UserDTO userDTO, UUID id) {
+     try {
+     userService.updateUser(userDTO, id);
+     } catch (RuntimeException e) {
+     throw new RuntimeException(e);
+     }
 
-    // }
+     }
 
     // @GetMapping("/deleteUser")
     // public void deleteProfile(UUID id) {
