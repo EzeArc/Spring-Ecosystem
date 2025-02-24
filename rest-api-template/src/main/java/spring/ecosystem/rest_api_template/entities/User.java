@@ -5,17 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import spring.ecosystem.rest_api_template.enums.Permission;
 import spring.ecosystem.rest_api_template.enums.Role;
 
@@ -34,22 +28,71 @@ public class User extends Auditable implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Column(name = "role")
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
     public User(UUID id, String userName, String firstName, String lastName, String email, String password,
-            Role role) {
+                Set<Role> role) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.roles = role;
+    }
+
+
+    // ✅ Métodos de Spring Security
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (Role role : roles) {
+            authorities.add(role); // Agregar cada rol como autoridad
+            authorities.addAll(role.getPermissions()); // Agregar permisos individuales de cada rol
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public boolean hasPermission(Permission permission) {
+        return roles.stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(p -> p.equals(permission));
     }
 
     public UUID getId() {
@@ -96,55 +139,11 @@ public class User extends Auditable implements UserDetails {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    // ✅ Métodos de Spring Security
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(role); // Agregar el rol como autoridad
-        authorities.addAll(role.getPermissions()); // Agregar permisos individuales
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    // ✅ Método para verificar si el usuario tiene un permiso específico
-    public boolean hasPermission(Permission permission) {
-        return role.getPermissions().contains(permission);
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

@@ -1,6 +1,7 @@
 package spring.ecosystem.rest_api_template.services.impl;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -69,10 +70,10 @@ public class UserService implements IUserService {
     public UserDTO createUser(CreateUserDTO createUserDTO) {
         User user = userMapper.createUserDTOToUser(createUserDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (createUserDTO.getRole() == null) {
-            user.setRole(Role.USER);
+        if (createUserDTO.getRoles() == null) {
+            user.setRoles(Set.of(Role.USER));
         } else {
-            user.setRole(createUserDTO.getRole());
+            user.setRoles(createUserDTO.getRoles());
         }
         user = userRepository.save(user);
         return userMapper.userToUserDTO(user);
@@ -90,7 +91,7 @@ public class UserService implements IUserService {
                             updatedUser.getEmail(),
                             updatedUser.getPassword() != null ? passwordEncoder.encode(updatedUser.getPassword())
                                     : existingUser.getPassword(),
-                            updatedUser.getRole() != null ? updatedUser.getRole() : existingUser.getRole());
+                            updatedUser.getRoles() != null ? updatedUser.getRoles() : existingUser.getRoles());
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));

@@ -40,7 +40,7 @@ public class AuthenticateService {
     private Map<String, Object> generateExtraClaims(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("email", user.getEmail());
-        extraClaims.put("role", user.getRole().name());
+        extraClaims.put("role", user.getRoles());
         extraClaims.put("authorities", user.getAuthorities());
         extraClaims.put("userName", user.getUserName());
         return extraClaims;
@@ -53,8 +53,8 @@ public class AuthenticateService {
         authenticationManager.authenticate(authentication);
         User user = userService.findOneByEmail(authRequest.getEmail());
         String jwt = jwtService.generateToken(user, generateExtraClaims(user));
-        return new AuthenticationResponseDTO(user.getId(), user.getUserName(),
-                user.getRole().toString(),jwt, user.getEmail());
+        return new AuthenticationResponseDTO(user.getId(), user.getUsername(),
+                user.getRoles().toString(),jwt, user.getEmail());
     }
 
     public boolean validateToken(String jwt) {
@@ -82,8 +82,8 @@ public class AuthenticateService {
             User user = userService.findOneByEmail(userName);
             return new AuthenticationResponseDTO(
                     user.getId(),
-                    user.getUserName(),
-                    user.getRole().toString(),
+                    user.getUsername(),
+                    user.getRoles().toString(),
                     jwt,
                     user.getEmail());
         } catch (Exception e) {
