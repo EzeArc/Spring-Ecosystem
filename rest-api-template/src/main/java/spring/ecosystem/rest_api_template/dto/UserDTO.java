@@ -1,5 +1,7 @@
 package spring.ecosystem.rest_api_template.dto;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
@@ -33,7 +35,7 @@ public class UserDTO {
     private String password;
 
     @NotNull(message = "El rol no puede ser nulo.")
-    private Role role;
+    private Set<Role> roles = new HashSet<>();
 
     public UserDTO() {
 
@@ -45,7 +47,7 @@ public class UserDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.password = user.getPassword();
-        this.role = user.getRole();
+        this.roles = user.getRoles();
         this.userName = user.getUserName();
     }
 }
