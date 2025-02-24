@@ -64,15 +64,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-     @PutMapping("/upgrateProfile")
-     public void upgrateProfile( UserDTO userDTO, UUID id) {
-     try {
-     userService.updateUser(userDTO, id);
-     } catch (RuntimeException e) {
-     throw new RuntimeException(e);
-     }
-
-     }
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> upgrateProfile(@RequestBody UserDTO userDTO, @RequestParam UUID id) {
+        try {
+            return ResponseEntity.ok(userService.updateUser(userDTO, id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
 
     // @GetMapping("/deleteUser")
     // public void deleteProfile(UUID id) {

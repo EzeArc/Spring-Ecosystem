@@ -9,18 +9,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -47,11 +42,10 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticateFilter jwtAuthenticateFilter;
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
+    private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/authenticate"};
-
+            "/api/test/**", "/authenticate" };
 
     @Autowired
     private CustomOAuth2SuccessHandler successHandler;
@@ -66,13 +60,15 @@ public class SecurityConfig {
                 .authenticationProvider(daoAuthenticationProvider)
                 .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authRequestConfig -> {
-                    authRequestConfig.requestMatchers("/oauth2/**", "/login/**","/api/users/**").permitAll();
-                    authRequestConfig.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll(); // Login con usuario y contraseña
+                    authRequestConfig.requestMatchers("/oauth2/**", "/login/**", "/api/users/**").permitAll();
+                    authRequestConfig.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll(); // Login con
+                                                                                                       // usuario y
+                                                                                                       // contraseña
                     authRequestConfig.requestMatchers(WHITE_LIST_URL).permitAll();
                     authRequestConfig.requestMatchers(HttpMethod.GET, "/adminController/listaServiciosAdmin")
                             .hasRole(Role.ADMIN.name());
                     authRequestConfig.requestMatchers(HttpMethod.POST, "/api/users/register").permitAll();
-                    authRequestConfig.requestMatchers(HttpMethod.PUT, "/api/users/upgrateProfile").permitAll();
+                    authRequestConfig.requestMatchers(HttpMethod.PUT, "/api/users/update-profile").permitAll();
                     authRequestConfig.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
@@ -84,11 +80,9 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                        })
-                );
+                        }));
         return http.build();
     }
-
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

@@ -14,7 +14,7 @@ public class AutheticationController {
     @Autowired
     private AuthenticateService autheticateService;
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDTO> authetication(@RequestBody AuthenticationRequestDTO authDTO) {
         AuthenticationResponseDTO auth = autheticateService.login(authDTO);
         return ResponseEntity.ok(auth);

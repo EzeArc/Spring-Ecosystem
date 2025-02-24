@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -37,7 +36,7 @@ public class User extends Auditable implements UserDetails {
     }
 
     public User(UUID id, String userName, String firstName, String lastName, String email, String password,
-                Set<Role> role) {
+            Set<Role> role) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;
@@ -46,7 +45,6 @@ public class User extends Auditable implements UserDetails {
         this.password = password;
         this.roles = role;
     }
-
 
     // ✅ Métodos de Spring Security
     @Override
