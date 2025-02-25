@@ -41,15 +41,7 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticateFilter jwtAuthenticateFilter;
-//swagger
-    private static final String[] WHITE_LIST_URL = {"/v2/api-docs", "/v3/api-docs",
-            "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
-            "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html",
-            "/api/test/**"};
-//end-point
-    private static final String[] PUBLIC_LIST_URL_PUBLIC = {"/api/v1/auth/login", "/api/v1/auth/validate", "/api/v1/auth/register"};
-    private static final String[] PRIVATE_LIST_URL_USER = {"/api/v1/auth/validateGetProfile", "/api/v1/auth/profiles", "/api/v1/auth/findByIde", "/api/v1/auth/page", "/api/v1/auth/password", "/api/v1/auth/update-profile"};
-    private static final String[] PRIVATE_LIST_URL_ADMIN = {"/admin"};
+
     @Autowired
     private CustomOAuth2SuccessHandler successHandler;
 
@@ -81,6 +73,27 @@ public class SecurityConfig {
                         }));
         return http.build();
     }
+
+    // swagger end-points
+    private static final String[] WHITE_LIST_URL = {
+            "/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources",
+            "/swagger-resources/**", "/configuration/ui", "/configuration/security",
+            "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/test/**"
+    };
+
+    // PUBLIC ENDPOINTS
+    private static final String[] PUBLIC_LIST_URL_PUBLIC = {
+            "/api/v1/auth/login", "/api/v1/auth/validate", "/users/register",
+    };
+
+    // PRIVATE ENDPOINTS
+    private static final String[] PRIVATE_LIST_URL_USER = {
+            "/api/v1/auth/validateGetProfile", "/api/v1/auth/profiles", "/users/{id}",
+            "/users/page", "/users/{id}/change-password", "/users/{id}/deactivate-account",
+            "/users/{id}/activate-account",
+    };
+
+    private static final String[] PRIVATE_LIST_URL_ADMIN = { "/admin" };
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
