@@ -17,20 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityNotFoundException;
 import spring.ecosystem.rest_api_template.dto.ChangePasswordDTO;
 import spring.ecosystem.rest_api_template.dto.CreateUserDTO;
 import spring.ecosystem.rest_api_template.dto.UserDTO;
 import spring.ecosystem.rest_api_template.services.impl.UserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-
-    @GetMapping("/findByIde")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
@@ -40,8 +40,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Aca devolvemos todos sin paginar, podría servir para hacer un export de los
-    // datos (CSV por ej.)
     @GetMapping("/page")
     public ResponseEntity<Page<UserDTO>> getUsersPage(
             @RequestParam(defaultValue = "0") int page,
@@ -55,16 +53,8 @@ public class UserController {
 
     }
 
-    @PutMapping("/password")
-    public ResponseEntity<Void> changePassword(
-            @PathVariable UUID id,
-            @RequestBody @Validated ChangePasswordDTO changePasswordDTO) {
-        userService.changePassword(id, changePasswordDTO);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/update-profile")
-    public ResponseEntity<?> upgrateProfile(@RequestBody UserDTO userDTO, @RequestParam UUID id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserProfile(@RequestBody UserDTO userDTO, @PathVariable UUID id) {
         try {
             return ResponseEntity.ok(userService.updateUser(userDTO, id));
         } catch (RuntimeException e) {
@@ -72,12 +62,31 @@ public class UserController {
         }
     }
 
-    // @GetMapping("/deleteUser")
-    // public void deleteProfile(UUID id) {
-    // try {
-    // usuarioServicio.deleteUser(id);
-    // } catch (Exception e) {
-    // new RuntimeException(e.getMessage());
-    // }
-    // }
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable UUID id,
+            @RequestBody @Validated ChangePasswordDTO changePasswordDTO) {
+        userService.changePassword(id, changePasswordDTO);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/activate-account")
+    public ResponseEntity<String> activateUserAccount(@PathVariable UUID id) {
+        try {
+            userService.activateUser(id);
+            return ResponseEntity.ok("Usuario activado exitosamente.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/deactivate-account")
+    public ResponseEntity<String> deactivateUserAccount(@PathVariable UUID id) {
+        try {
+            userService.deactivateUser(id);
+            return ResponseEntity.ok("Usuario desactivado exitosamente.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

@@ -100,19 +100,21 @@ public class UserService implements IUserService {
     @Override
     public void deactivateUser(UUID id) {
         userRepository.findById(id)
-                .ifPresent(user -> {
+                .map(user -> {
                     user.setIsActive(false);
-                    userRepository.save(user);
-                });
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
     }
 
     @Override
     public void activateUser(UUID id) {
         userRepository.findById(id)
-                .ifPresent(user -> {
+                .map(user -> {
                     user.setIsActive(true);
-                    userRepository.save(user);
-                });
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
     }
 
     @Override
