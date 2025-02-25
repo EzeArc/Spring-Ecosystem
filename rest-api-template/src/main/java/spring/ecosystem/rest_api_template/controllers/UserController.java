@@ -28,10 +28,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    // @Autowired
-    // private AuthenticateService authenticateService;
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/findByIde")
     public ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
@@ -56,7 +55,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/{id}/password")
+    @PutMapping("/password")
     public ResponseEntity<Void> changePassword(
             @PathVariable UUID id,
             @RequestBody @Validated ChangePasswordDTO changePasswordDTO) {

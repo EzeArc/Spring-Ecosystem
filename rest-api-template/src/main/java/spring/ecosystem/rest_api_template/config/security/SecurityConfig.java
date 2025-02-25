@@ -41,12 +41,15 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticateFilter jwtAuthenticateFilter;
-
-    private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
+//swagger
+    private static final String[] WHITE_LIST_URL = {"/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
-            "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/authenticate" };
-
+            "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html",
+            "/api/test/**"};
+//end-point
+    private static final String[] PUBLIC_LIST_URL_PUBLIC = {"/api/v1/auth/login", "/api/v1/auth/validate", "/api/v1/auth/register"};
+    private static final String[] PRIVATE_LIST_URL_USER = {"/api/v1/auth/validateGetProfile", "/api/v1/auth/profiles", "/api/v1/auth/findByIde", "/api/v1/auth/page", "/api/v1/auth/password", "/api/v1/auth/update-profile"};
+    private static final String[] PRIVATE_LIST_URL_ADMIN = {"/admin"};
     @Autowired
     private CustomOAuth2SuccessHandler successHandler;
 
@@ -60,15 +63,10 @@ public class SecurityConfig {
                 .authenticationProvider(daoAuthenticationProvider)
                 .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authRequestConfig -> {
-                    authRequestConfig.requestMatchers("/oauth2/**", "/login/**", "/api/users/**").permitAll();
-                    authRequestConfig.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll(); // Login con
-                                                                                                       // usuario y
-                                                                                                       // contraseña
                     authRequestConfig.requestMatchers(WHITE_LIST_URL).permitAll();
-                    authRequestConfig.requestMatchers(HttpMethod.GET, "/adminController/listaServiciosAdmin")
-                            .hasRole(Role.ADMIN.name());
-                    authRequestConfig.requestMatchers(HttpMethod.POST, "/api/users/register").permitAll();
-                    authRequestConfig.requestMatchers(HttpMethod.PUT, "/api/users/update-profile").permitAll();
+                    authRequestConfig.requestMatchers(PUBLIC_LIST_URL_PUBLIC).permitAll();
+                    authRequestConfig.requestMatchers(PRIVATE_LIST_URL_USER).hasRole(Role.USER.name());
+                    authRequestConfig.requestMatchers(PRIVATE_LIST_URL_ADMIN).hasRole(Role.ADMIN.name());
                     authRequestConfig.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
