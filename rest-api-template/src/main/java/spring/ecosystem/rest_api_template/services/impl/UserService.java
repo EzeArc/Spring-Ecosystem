@@ -120,7 +120,11 @@ public class UserService implements IUserService {
     @Override
     public void deleteUser(UUID id) {
         userRepository.findById(id)
-                .ifPresent(userRepository::delete);
+                .ifPresentOrElse(
+                        userRepository::delete,
+                        () -> {
+                            throw new EntityNotFoundException("Usuario con ID " + id + " no encontrado.");
+                        });
     }
 
     @Override

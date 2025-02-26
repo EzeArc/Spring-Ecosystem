@@ -90,7 +90,7 @@ public class SecurityConfig {
     private static final String[] PRIVATE_LIST_URL_USER = {
             "/api/v1/auth/validateGetProfile", "/api/v1/auth/profiles", "/users/{id}",
             "/users/page", "/users/{id}/change-password", "/users/{id}/deactivate-account",
-            "/users/{id}/activate-account",
+            "/users/{id}/activate-account", "/users/{id}/delete-account",
     };
 
     private static final String[] PRIVATE_LIST_URL_ADMIN = { "/admin" };
