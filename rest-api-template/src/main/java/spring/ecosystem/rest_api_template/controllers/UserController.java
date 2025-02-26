@@ -64,11 +64,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}/change-password")
-    public ResponseEntity<Void> changePassword(
+    public ResponseEntity<String> changePassword(
             @PathVariable UUID id,
             @RequestBody @Validated ChangePasswordDTO changePasswordDTO) {
-        userService.changePassword(id, changePasswordDTO);
-        return ResponseEntity.noContent().build();
+        try {
+            userService.changePassword(id, changePasswordDTO);
+            return ResponseEntity.ok().body("Su constraseña ha sido cambiada exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/activate-account")
