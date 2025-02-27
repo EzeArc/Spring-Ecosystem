@@ -46,6 +46,7 @@ public class AuthenticateService {
         return extraClaims;
     }
 
+
     public AuthenticationResponseDTO login(AuthenticationRequestDTO authRequest) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(authRequest.getEmail(),
                 authRequest.getPassword());

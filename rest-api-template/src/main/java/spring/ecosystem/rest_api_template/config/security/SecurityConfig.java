@@ -93,7 +93,7 @@ public class SecurityConfig {
             "/users/{id}/activate-account", "/users/{id}/delete-account",
     };
 
-    private static final String[] PRIVATE_LIST_URL_ADMIN = { "/admin" };
+    private static final String[] PRIVATE_LIST_URL_ADMIN = { "/admin/saludo" };
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
